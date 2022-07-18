@@ -1,20 +1,49 @@
-import _ from 'lodash';
+// Import modules
 import './sass/style.scss';
-import Icon from './icon.png';
-function component() {
-  const element = document.createElement('div');
+import show from './modules/show.js';
+import addTask from './modules/addTask.js';
+import deleteAllTask from './modules/deleteAllTask.js';
+import deleteAllCompleted from './modules/deleteAllCompleted.js';
+import {
+  newTaskInp, addTaskBtn, deleteAllBtn, deleteAllCompletedBtn,
+} from './modules/domElements.js';
+import { DateTime } from './modules/luxon.min.js';
 
-  // Lodash, now imported by this script
-  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-  element.classList.add('hello');
+// --------------------FUNCTIONS------------------------ //
 
-  // Add the image to our existing div.
-  const myIcon = new Image();
-  myIcon.src = Icon;
+// Function to add a new task in the UI and the storage
+const addTaskUI = () => {
+  addTask(newTaskInp.value);
+  newTaskInp.value = '';
+};
 
-  element.appendChild(myIcon);
+// -----------------------EVENTS---------------------------- //
+newTaskInp.addEventListener('keypress', (event) => {
+  if (String(event.key) === String('Enter')) {
+    addTaskUI();
+  }
+});
 
-  return element;
-}
+addTaskBtn.addEventListener('click', () => {
+  addTaskUI();
+});
 
-document.body.appendChild(component());
+deleteAllBtn.addEventListener('click', () => {
+  deleteAllTask();
+  show();
+});
+
+deleteAllCompletedBtn.addEventListener('click', () => {
+  deleteAllCompleted();
+  show();
+});
+
+window.addEventListener('load', () => {
+  // Show current time
+  const dateP = document.querySelector('.date');
+  const currentDate = DateTime.now();
+  dateP.textContent = `${currentDate.toLocaleString(DateTime.DATETIME_MED)}`;
+
+  // Show task
+  show();
+});
